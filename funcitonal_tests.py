@@ -1,16 +1,19 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from django.views.decorators.csrf import csrf_exempt
+import time
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(3)
+        self.browser.implicitly_wait(10)
 
     def tearDown(self) -> None:
         self.browser.quit()
 
+    # @csrf_exempt
     def test_can_start_a_list_and_retrieve_it_later(self):
         # 听说有一个很酷的在线代办事项应用
         # 现在去看一下这个应用的首页
@@ -32,6 +35,7 @@ class NewVisitorTest(unittest.TestCase):
         # 用户回车后页面更新
         # 代办事项列表中显示了“1.Buy peacock feathers”
         inputbox.send_keys(Keys.ENTER)
+        time.sleep(5)
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         # self.assertTrue(any(row.text == '1: Buy peacock feathers' for row in rows),
@@ -44,8 +48,8 @@ class NewVisitorTest(unittest.TestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys("Use peacock feathers to make a fly")
         inputbox.send_keys(Keys.ENTER)
-
-        # 页面再次更新，清单中显示了2个代办事项
+        time.sleep(5)
+        # # 页面再次更新，清单中显示了2个代办事项
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
